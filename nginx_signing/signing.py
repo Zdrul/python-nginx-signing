@@ -1,7 +1,11 @@
 from base64 import urlsafe_b64encode
 from hashlib import md5
 from time import time
-from urlparse import urlparse, urlunparse, ParseResult
+
+try:
+    import urllib.parse as urlparse
+except ModuleNotFoundError:
+    import urlparse
 
 DEFAULT = object()
 
@@ -39,14 +43,14 @@ class UriSigner(Nginx):
     def sign(self, uri):
         sig, exp = self.signature(uri)
 
-        parsed = urlparse(uri)
+        parsed = urlparse.urlparse(uri)
 
         query = parsed.query
         if query:
             query += '&'
         query += 'st=%s&e=%s' % (sig, exp)
 
-        return urlunparse(ParseResult(
+        return urlparse.urlunparse(urlparse.ParseResult(
             parsed.scheme, parsed.netloc,
             parsed.path, parsed.params, query, parsed.fragment))
 
