@@ -11,7 +11,7 @@ DEFAULT = object()
 
 
 def generate_key(s):
-    return urlsafe_b64encode(md5(s).digest()).rstrip('=')
+    return urlsafe_b64encode(md5(s).digest()).rstrip(b'=')
 
 
 class Signer(object):
@@ -35,8 +35,8 @@ class Nginx(Signer):
 
     def signature(self, s):
         expiration = self.get_expiration()
-        string = self.format.format(key=self.key, value=s, expiration=expiration)
-        return generate_key(bytes(string)), expiration
+        string = self.format.format(key=self.key, value=s, expiration=expiration).encode('utf-8')
+        return generate_key(string), expiration
 
 
 class UriSigner(Nginx):
