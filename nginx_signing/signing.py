@@ -36,7 +36,7 @@ class Nginx(Signer):
     def signature(self, s):
         expiration = self.get_expiration()
         string = self.format.format(key=self.key, value=s, expiration=expiration)
-        return generate_key(string), expiration
+        return generate_key(bytes(string)), expiration
 
 
 class UriSigner(Nginx):
